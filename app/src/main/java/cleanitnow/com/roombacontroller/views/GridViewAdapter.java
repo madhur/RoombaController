@@ -1,7 +1,6 @@
 package cleanitnow.com.roombacontroller.views;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,10 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import cleanitnow.com.roombacontroller.Consts;
-import cleanitnow.com.roombacontroller.MainActivity;
 import cleanitnow.com.roombacontroller.R;
 import cleanitnow.com.roombacontroller.controller.RoombaController;
 

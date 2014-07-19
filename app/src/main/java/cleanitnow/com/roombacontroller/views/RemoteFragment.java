@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import cleanitnow.com.roombacontroller.MainActivity;
 import cleanitnow.com.roombacontroller.R;
-import cleanitnow.com.roombacontroller.views.BaseFragment;
 
 /**
  * Created by madhur on 19-Jul-14.
