@@ -7,14 +7,23 @@ import android.widget.ArrayAdapter;
 import android.widget.SpinnerAdapter;
 
 import cleanitnow.com.roombacontroller.controller.RoombaController;
-import cleanitnow.com.roombacontroller.views.MainFragment;
-import cleanitnow.com.roombacontroller.views.RoombaViewFragment;
+import cleanitnow.com.roombacontroller.views.MapViewFragment;
+import cleanitnow.com.roombacontroller.views.RemoteFragment;
 
-
+/**
+ * Main Activity of the application. Responsible for hosting one of the two fragments at a time: @MapViewFragment or @RemoteFragment
+ */
 public class MainActivity extends ActionBarActivity implements ActionBar.OnNavigationListener
 {
+    /***
+     * The instance of the RoombaController which implements IController interface.
+     */
     private RoombaController roombaController;
 
+    /***
+     * Initialize and setup the action bar with the spinner
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -42,17 +51,23 @@ public class MainActivity extends ActionBarActivity implements ActionBar.OnNavig
     }
 
 
+    /***
+     * Load the desired fragment based on the selected spinner
+     * @param position
+     * @param id
+     * @return
+     */
     @Override
     public boolean onNavigationItemSelected(int position, long id)
     {
         if(position==0)
         {
-            getSupportFragmentManager().beginTransaction().replace(android.R.id.content, new MainFragment()).commit();
+            getSupportFragmentManager().beginTransaction().replace(android.R.id.content, new RemoteFragment()).commit();
             return true;
         }
         else if(position ==1)
         {
-            getSupportFragmentManager().beginTransaction().replace(android.R.id.content, new RoombaViewFragment()).commit();
+            getSupportFragmentManager().beginTransaction().replace(android.R.id.content, new MapViewFragment()).commit();
             return true;
         }
 

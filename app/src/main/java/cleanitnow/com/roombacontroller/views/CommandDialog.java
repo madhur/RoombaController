@@ -14,6 +14,7 @@ import cleanitnow.com.roombacontroller.R;
 
 /**
  * Created by madhur on 19-Jul-14.
+ * This dialog class implements a dialog box where user can type the commands to be given to controller through keyboard
  */
 public class CommandDialog extends DialogFragment
 {

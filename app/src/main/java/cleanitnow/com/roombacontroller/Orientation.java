@@ -2,6 +2,7 @@ package cleanitnow.com.roombacontroller;
 
 /**
  * Created by madhur on 19-Jul-14.
+ * This enum lists the various orientations which Roomba can have.
  */
 public enum Orientation
 {

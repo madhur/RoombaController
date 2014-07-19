@@ -3,101 +3,82 @@ package cleanitnow.com.roombacontroller.controller;
 import java.util.ArrayList;
 
 import cleanitnow.com.roombacontroller.Orientation;
+import cleanitnow.com.roombacontroller.positiondata.Position;
 
 /**
  * Created by madhur on 19-Jul-14.
  */
+
+
+
+/**
+ * Implementation of Roomba Controller
+  */
 public class RoombaController implements  IController
 {
-    private int xPosition;
-    private int yPosition;
-    private Orientation orientation;
+
+    /**
+     * X, Y , orientation are encapsulated in Position class
+     */
+    private Position position;
+
+
+    /**
+     * ArrayList to hold the observers
+     */
     private ArrayList<IObserver> observers=new ArrayList<IObserver>();
 
     public RoombaController()
     {
-        Reset();
+
+        position=new Position();
     }
 
+    /**
+     *  Advance the roomba position. Notify the observers
+     */
     @Override
     public void Advance()
     {
-        switch (getOrientation())
-        {
-            case NORTH:
-                xPosition= getxPosition() +1;
-                break;
 
-            case SOUTH:
-                xPosition= getxPosition() -1;
-                break;
-
-            case EAST:
-                yPosition= getyPosition() +1;
-                break;
-
-            case WEST:
-                yPosition= getyPosition() -1;
-                break;
-
-        }
+        position.Advance();
 
         positionChanged();
 
     }
 
+    /**
+     *Advance the roomba position. Notify the observers
+      */
     @Override
     public void TurnLeft()
     {
-        switch (getOrientation())
-        {
-            case NORTH:
-                orientation=Orientation.WEST;
-                break;
 
-            case SOUTH:
-                orientation=Orientation.EAST;
-                break;
-
-            case EAST:
-                orientation=Orientation.NORTH;
-                break;
-
-            case WEST:
-                orientation=Orientation.SOUTH;
-                break;
-
-        }
-
+        position.TurnLeft();
         positionChanged();
 
     }
 
+    /**
+     * Turn right. Notify the observers.
+     */
     @Override
     public void TurnRight()
     {
-        switch (getOrientation())
-        {
-            case NORTH:
-                orientation=Orientation.EAST;
-                break;
 
-            case SOUTH:
-                orientation=Orientation.WEST;
-                break;
-
-            case EAST:
-                orientation=Orientation.SOUTH;
-                break;
-
-            case WEST:
-                orientation=Orientation.NORTH;
-                break;
-
-        }
-
+        position.TurnRight();
         positionChanged();
 
+    }
+
+    /**
+     * Reset the Roomba position
+     */
+    public void Reset()
+    {
+        position.Reset();
+
+        positionChanged();
     }
 
     @Override
@@ -127,13 +108,11 @@ public class RoombaController implements  IController
             observers.remove(observer);
     }
 
-    public void Reset()
-    {
-        xPosition=0;
-        yPosition=0;
-        orientation=Orientation.NORTH;
-    }
 
+    /**
+     * Print the string representation of Controller
+     * @return
+     */
     @Override
     public String toString()
     {
@@ -142,16 +121,16 @@ public class RoombaController implements  IController
 
     public int getxPosition()
     {
-        return xPosition;
+        return position.getxPosition();
     }
 
     public int getyPosition()
     {
-        return yPosition;
+        return position.getyPosition();
     }
 
     public Orientation getOrientation()
     {
-        return orientation;
+        return position.getOrientation();
     }
 }

@@ -18,6 +18,7 @@ import cleanitnow.com.roombacontroller.controller.RoombaController;
 
 /**
  * Created by madhur on 19-Jul-14.
+ * The @GridViewAdapter is responsible for laying out grid and rendering the Roomba at appropriate position.
  */
 public class GridViewAdapter extends BaseAdapter
 {
@@ -50,6 +51,13 @@ public class GridViewAdapter extends BaseAdapter
         return position;
     }
 
+    /**
+     * This method implements the View holder pattern to render the grid. Roomba position is calculated by using X,Y co-ordinates and origentation
+     * @param position
+     * @param convertView
+     * @param parent
+     * @return
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
@@ -75,35 +83,30 @@ public class GridViewAdapter extends BaseAdapter
 
         int origin=Consts.NUM_GRIDS- getNumCols();
 
-        int xDispacement=origin - ((roombaController.getxPosition()+1)* getNumCols());
+        int xDispacement=origin - ((roombaController.getxPosition())* getNumCols());
         int yDisplacement=roombaController.getyPosition();
 
         int roombaPosition=xDispacement+yDisplacement;
 
-//        Log.d("TAG", "numCols: " +String.valueOf(getNumCols()));
-//        Log.d("TAG", "Roombaposition: " +String.valueOf(roombaPosition));
-//        Log.d("TAG", "Origin "+String.valueOf(origin));
-//        Log.d("TAG", "x "+String.valueOf(xDispacement));
-//        Log.d("TAG", "y "+String.valueOf(yDisplacement));
+
 
         holder.position.setText(String.valueOf(position));
         if(position==roombaPosition)
         {
-            Log.d("TAG", "Shwoing  " + String.valueOf(position));
+
             holder.roombaView.setVisibility(View.VISIBLE);
         }
         else
         {
-            Log.d("TAG", "Hiding  " + String.valueOf(position));
+
             holder.roombaView.setVisibility(View.INVISIBLE);
         }
 
         holder.roombaView.setRotation( roombaController.getOrientation().getAngle());
-       // int roombaPosition=roombaController.getxPosition()
-
 
         return v;
     }
+
 
     public int getNumCols()
     {
@@ -118,7 +121,7 @@ public class GridViewAdapter extends BaseAdapter
 
     public static class ViewHolder
     {
-         ImageView roombaView;
+        ImageView roombaView;
         TextView position;
     }
 }

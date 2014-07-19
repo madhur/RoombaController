@@ -1,15 +1,8 @@
 package cleanitnow.com.roombacontroller.views;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -35,15 +28,20 @@ public abstract class BaseFragment extends Fragment implements IObserver, Comman
         setHasOptionsMenu(true);
 
         ((MainActivity) getActivity()).getRoombaController().setObserver(this);
+
+
     }
 
     @Override
-    public void onDestroy()
+    public void onDetach()
     {
-        super.onDestroy();
+        super.onDetach();
 
         ((MainActivity) getActivity()).getRoombaController().removeObserver(this);
+
+
     }
+
 
 
     @Override

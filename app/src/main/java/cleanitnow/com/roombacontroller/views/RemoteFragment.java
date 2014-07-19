@@ -15,8 +15,9 @@ import cleanitnow.com.roombacontroller.views.BaseFragment;
 
 /**
  * Created by madhur on 19-Jul-14.
+ * This fragment implements the remote view. This fragment also acts as an observer to be notified of Roomba position changes.
  */
-public class MainFragment extends BaseFragment
+public class RemoteFragment extends BaseFragment
 {
 
     private TextView positionTextView;
@@ -35,25 +36,35 @@ public class MainFragment extends BaseFragment
     }
 
 
+    /***
+     * This method first calls the parent class implementation to let make changes to controller according to given command.
+     * This implementation only rotates the image according to command.
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-         super.onOptionsItemSelected(item);
+        // Call the super implementation to advance the controller. This implementation only roates the image in current fragment
+        super.onOptionsItemSelected(item);
 
         int id = item.getItemId();
+
+        // Currently there are no settings int the application. Do nothing.
         if (id == R.id.action_settings)
         {
             return true;
         }
         else if(id==R.id.action_advance)
         {
-
+            // Do nothing no rotation is required.
 
         }
 
         else if(id==R.id.action_left)
         {
 
+            // Rotate left
             roombaImageView.setRotation( ((MainActivity)getActivity()).getRoombaController().getOrientation().getAngle());
             return true;
 
@@ -61,13 +72,14 @@ public class MainFragment extends BaseFragment
 
         else if(id==R.id.action_right)
         {
-
+            // Rotate right
             roombaImageView.setRotation( ((MainActivity)getActivity()).getRoombaController().getOrientation().getAngle());
             return true;
         }
         else if(id==R.id.action_reset)
         {
 
+            // Reset
             roombaImageView.setRotation(0);
             return true;
         }
@@ -75,6 +87,9 @@ public class MainFragment extends BaseFragment
         return false;
     }
 
+    /**
+     * This method will be called by controller as a callback whenever the position changes.
+     */
     @Override
     public void update()
     {

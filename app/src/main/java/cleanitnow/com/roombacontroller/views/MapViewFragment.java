@@ -1,27 +1,22 @@
 package cleanitnow.com.roombacontroller.views;
 
-import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import cleanitnow.com.roombacontroller.MainActivity;
 import cleanitnow.com.roombacontroller.R;
 import cleanitnow.com.roombacontroller.controller.RoombaController;
-import cleanitnow.com.roombacontroller.views.BaseFragment;
 
 /**
  * Created by madhur on 19-Jul-14.
+ * This fragment implements the map view. This fragment also acts as an observer to be notified of Roomba position changes.
  */
-public class RoombaViewFragment extends BaseFragment
+public class MapViewFragment extends BaseFragment
 {
     private GridView gridView;
     private RoombaController roomBaController;
@@ -34,19 +29,13 @@ public class RoombaViewFragment extends BaseFragment
 
         this.roomBaController=((MainActivity)getActivity()).getRoombaController();
 
-        Display display = getActivity().getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int width = size.x;
-        int height = size.y;
-
-        Log.d("TAG", String.valueOf(width));
-        Log.d("TAG", String.valueOf(height));
-
-
         return v;
     }
 
+    /**
+     *Renders the grid.
+     * @param savedInstanceState
+     */
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState)
     {
@@ -60,6 +49,11 @@ public class RoombaViewFragment extends BaseFragment
         gridViewAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * This method calls the super class implementation to do most of its work. This implementation simply notifies the adapter to update itself.
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
@@ -74,6 +68,9 @@ public class RoombaViewFragment extends BaseFragment
 
     }
 
+    /**
+     * Map View does not render the position. Hence this method is not used. It can be used in future.
+     */
     @Override
     public void update()
     {
