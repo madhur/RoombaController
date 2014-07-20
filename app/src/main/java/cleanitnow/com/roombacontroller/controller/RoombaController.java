@@ -3,11 +3,8 @@ package cleanitnow.com.roombacontroller.controller;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
+import android.widget.Toast;
 
-import java.util.ArrayList;
-
-import cleanitnow.com.roombacontroller.App;
 import cleanitnow.com.roombacontroller.Consts;
 import cleanitnow.com.roombacontroller.Orientation;
 import cleanitnow.com.roombacontroller.positiondata.Position;
@@ -30,12 +27,15 @@ public class RoombaController implements IController
 
     private Context context;
 
+    private boolean isBusy;
+
 
     public RoombaController(Context context)
     {
 
         position = new Position();
         this.context = context;
+        setBusy(false);
     }
 
     /**
@@ -44,12 +44,14 @@ public class RoombaController implements IController
     @Override
     public void Advance()
     {
-
-        if (position.Advance())
+        if( !isBusy)
         {
+            if (position.Advance())
+            {
 
-
-            LocalBroadcastManager.getInstance(context).sendBroadcast(PrepareIntent(Consts.ACTION_ADVANCE));
+                LocalBroadcastManager.getInstance(context).sendBroadcast(PrepareIntent(Consts.ACTION_ADVANCE));
+                isBusy = true;
+            }
         }
 
     }
@@ -61,10 +63,13 @@ public class RoombaController implements IController
     public void TurnLeft()
     {
 
-        position.TurnLeft();
+        if(!isBusy)
+        {
+            position.TurnLeft();
+            LocalBroadcastManager.getInstance(context).sendBroadcast(PrepareIntent(Consts.ACTION_LEFT));
+            isBusy=true;
+        }
 
-
-        LocalBroadcastManager.getInstance(context).sendBroadcast(PrepareIntent(Consts.ACTION_LEFT));
 
     }
 
@@ -74,11 +79,14 @@ public class RoombaController implements IController
     @Override
     public void TurnRight()
     {
+        if(!isBusy)
+        {
 
-        position.TurnRight();
+            position.TurnRight();
+            LocalBroadcastManager.getInstance(context).sendBroadcast(PrepareIntent(Consts.ACTION_RIGHT));
+            isBusy=true;
+        }
 
-
-        LocalBroadcastManager.getInstance(context).sendBroadcast(PrepareIntent(Consts.ACTION_RIGHT));
 
     }
 
@@ -134,5 +142,15 @@ public class RoombaController implements IController
     public Orientation getOrientation()
     {
         return position.getOrientation();
+    }
+
+    public boolean isBusy()
+    {
+        return isBusy;
+    }
+
+    public void setBusy(boolean isBusy)
+    {
+        this.isBusy = isBusy;
     }
 }
