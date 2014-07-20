@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Roomba Controller</string>
+    <string name="app_name">Roomba</string>
 
     <string name="action_left">L</string>
     <string name="action_right">R</string>
