@@ -3,7 +3,6 @@ package cleanitnow.com.roombacontroller.controller;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
-import android.widget.Toast;
 
 import cleanitnow.com.roombacontroller.Consts;
 import cleanitnow.com.roombacontroller.Orientation;
@@ -25,8 +24,14 @@ public class RoombaController implements IController
      */
     private Position position;
 
+    /***
+     * We store context to fire broadcast intents from the methods of this class
+     */
     private Context context;
 
+    /**
+     * Field indicating if the controller is busy executing a command
+     */
     private boolean isBusy;
 
 
@@ -49,7 +54,10 @@ public class RoombaController implements IController
             if (position.Advance())
             {
 
+                // Fire an intent to let fragment update UI based on command
                 LocalBroadcastManager.getInstance(context).sendBroadcast(PrepareIntent(Consts.ACTION_ADVANCE));
+
+                // Controller is busy until UI is finished updating
                 isBusy = true;
             }
         }
@@ -66,7 +74,11 @@ public class RoombaController implements IController
         if(!isBusy)
         {
             position.TurnLeft();
+
+            // Fire an intent to let fragment update UI based on command
             LocalBroadcastManager.getInstance(context).sendBroadcast(PrepareIntent(Consts.ACTION_LEFT));
+
+            // Controller is busy until UI is finished updating
             isBusy=true;
         }
 
@@ -83,7 +95,11 @@ public class RoombaController implements IController
         {
 
             position.TurnRight();
+
+            // Fire an intent to let fragment update UI based on command
             LocalBroadcastManager.getInstance(context).sendBroadcast(PrepareIntent(Consts.ACTION_RIGHT));
+
+            // Controller is busy until UI is finished updating
             isBusy=true;
         }
 
@@ -92,6 +108,8 @@ public class RoombaController implements IController
 
     public void ProcessCommand(String command)
     {
+        StringBuilder actualCommand=new StringBuilder();
+
         // Cannot process command while roomba is busy.
         if(isBusy)
             return;
@@ -100,26 +118,36 @@ public class RoombaController implements IController
 
         // We prepare the intent first, because we want to pass the initial orientation, not the final one.
         Intent intent=PrepareIntent(Consts.ACTION_COMMAND);
-        intent.putExtra(Consts.PARAM_CMD, command);
 
+        // Execute the command on the controller
         for(char c: command.toCharArray())
         {
             if(c=='l' || c=='L')
             {
                 position.TurnLeft();
+                actualCommand.append(c);
             }
             else if(c=='r' || c=='R')
             {
                 position.TurnRight();
+                actualCommand.append(c);
             }
             else if (c=='a' || c== 'A')
             {
-                position.Advance();
+                // We ignore the commands which are not valid
+                if(position.Advance())
+                {
+                    actualCommand.append(c);
+                }
             }
 
         }
 
+        intent.putExtra(Consts.PARAM_CMD, actualCommand.toString());
 
+
+
+        // Fire an intent to let fragment update UI based on command
 
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
 

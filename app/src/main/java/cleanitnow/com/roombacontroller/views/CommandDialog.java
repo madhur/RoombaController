@@ -18,6 +18,9 @@ import cleanitnow.com.roombacontroller.R;
  */
 public class CommandDialog extends DialogFragment
 {
+    /**
+     * Interface which is implemented by fragment to listen for dialog events.
+     */
     public interface DialogListener
     {
         public void onDialogPositiveClick(DialogFragment dialog);

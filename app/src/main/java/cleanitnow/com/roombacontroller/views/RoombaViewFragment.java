@@ -1,7 +1,6 @@
 package cleanitnow.com.roombacontroller.views;
 
 import android.animation.Animator;
-import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -21,11 +20,8 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.ArrayList;
 
 import cleanitnow.com.roombacontroller.App;
 import cleanitnow.com.roombacontroller.Consts;
@@ -60,6 +56,9 @@ public class RoombaViewFragment extends BaseFragment implements CommandDialog.Di
     {
         super.onCreate(savedInstanceState);
 
+        /**
+         *Broadcast Reciever to handle Advance command
+          */
         advanceReciever = new BroadcastReceiver()
         {
             @Override
@@ -68,13 +67,15 @@ public class RoombaViewFragment extends BaseFragment implements CommandDialog.Di
                 if(!isRunning)
                 {
                     AnimateAdvance(Orientation.values()[intent.getIntExtra(Consts.PARAM_O, -1)]);
-                    updateStatus();
                 }
                 else
                     ShowToast();
             }
         };
 
+        /**
+         * Reciever to handle turn command
+         */
         turnReciever = new BroadcastReceiver()
         {
             @Override
@@ -83,7 +84,6 @@ public class RoombaViewFragment extends BaseFragment implements CommandDialog.Di
                 if(!isRunning)
                 {
                     AnimateTurn(Orientation.values()[intent.getIntExtra(Consts.PARAM_O, -1)]);
-                    updateStatus();
                 }
                 else
                     ShowToast();
@@ -91,6 +91,9 @@ public class RoombaViewFragment extends BaseFragment implements CommandDialog.Di
             }
         };
 
+        /**
+         * Reciever to handle command given from the keyboard
+         */
         commandReciever=new BroadcastReceiver()
         {
             @Override
@@ -99,7 +102,6 @@ public class RoombaViewFragment extends BaseFragment implements CommandDialog.Di
                 if(!isRunning)
                 {
                     AnimateCommand(intent.getStringExtra(Consts.PARAM_CMD), Orientation.values()[intent.getIntExtra(Consts.PARAM_O, -1)]);
-                    updateStatus();
                 }
                 else
                    ShowToast();
@@ -108,7 +110,9 @@ public class RoombaViewFragment extends BaseFragment implements CommandDialog.Di
         };
 
 
-
+        /**
+         * Listener for roomba animation of single command
+         */
         animatorListener=new Animator.AnimatorListener()
         {
             @Override
@@ -125,7 +129,7 @@ public class RoombaViewFragment extends BaseFragment implements CommandDialog.Di
                 AnimationFinished();
                 isRunning=false;
 
-
+                updateStatus();
             }
 
             @Override
@@ -141,6 +145,9 @@ public class RoombaViewFragment extends BaseFragment implements CommandDialog.Di
             }
         };
 
+        /**
+         * Listener for roomba animation of keyboard command
+         */
         commandanimatorListener=new Animator.AnimatorListener()
         {
             @Override
@@ -153,13 +160,9 @@ public class RoombaViewFragment extends BaseFragment implements CommandDialog.Di
             @Override
             public void onAnimationEnd(Animator animation)
             {
-                ((ActionBarActivity)getActivity()).setSupportProgressBarIndeterminateVisibility(false);
-                AnimationFinished();
-                isRunning=false;
-
+                // The complete animation is not finished yet. We process the next character index in command and restart the animation.
                 index=index+1;
 
-                RoombaController controller = ((MainActivity) getActivity()).getRoombaController();
                 if(command.length()> index)
                 {
                     Log.d(App.TAG, "Executing command index " + String.valueOf(index) + " for " + String.valueOf(command.charAt(index)) + " orientation " +previousOrientation );
@@ -170,6 +173,13 @@ public class RoombaViewFragment extends BaseFragment implements CommandDialog.Di
                     //animation is finished. Reset the index
                     Log.d(App.TAG, "Animation finish");
                     index=0;
+
+                    // Since animation is finished - reset running indicator, hide progress, reset status on controller, update status
+                    isRunning=false;
+                    ((ActionBarActivity)getActivity()).setSupportProgressBarIndeterminateVisibility(false);
+                    AnimationFinished();
+
+                    updateStatus();
 
                 }
 
@@ -196,6 +206,13 @@ public class RoombaViewFragment extends BaseFragment implements CommandDialog.Di
         Toast.makeText(getActivity(), "Roomba is busy", Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Retrieve the references to views. Setup the initial location of Roomba.
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
@@ -234,11 +251,15 @@ public class RoombaViewFragment extends BaseFragment implements CommandDialog.Di
         return v;
     }
 
+    /**
+     * We register the broadcast listeners in @onResume
+     */
     @Override
     public void onResume()
     {
         super.onResume();
 
+        // Register the recievers to listen for intents
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(advanceReciever, new IntentFilter(Consts.ACTION_ADVANCE));
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(turnReciever, new IntentFilter(Consts.ACTION_LEFT));
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(turnReciever, new IntentFilter(Consts.ACTION_RIGHT));
@@ -247,17 +268,26 @@ public class RoombaViewFragment extends BaseFragment implements CommandDialog.Di
         updateStatus();
     }
 
+    /**
+     * We remove the broadcast listeners in @onPause
+     */
     @Override
     public void onPause()
     {
         super.onPause();
 
+        // Remove the recievers when fragment is paused
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(advanceReciever);
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(turnReciever);
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(commandReciever);
     }
 
 
+    /**
+     * This is the first animate command given from the broadcast reciever. Subsequent commands are handled in the End listener of the Animation
+     * @param command
+     * @param orientation
+     */
     private void AnimateCommand(String command, Orientation orientation)
     {
 
@@ -269,6 +299,11 @@ public class RoombaViewFragment extends BaseFragment implements CommandDialog.Di
 
     }
 
+    /**
+     * Executes a single character command. Called from the End listener of the Animation
+     * @param c
+     * @param orientation
+     */
     private void ExecuteCharacterCommand(char c, Orientation orientation)
     {
         Orientation  end;
@@ -288,7 +323,7 @@ public class RoombaViewFragment extends BaseFragment implements CommandDialog.Di
             else
                 end=orientation;
 
-            mover=GetTurnAnimation(end);
+            mover=AnimatorUtil.GetTurnAnimation(roombaImage, end);
             previousOrientation=end;
 
         }
@@ -305,12 +340,12 @@ public class RoombaViewFragment extends BaseFragment implements CommandDialog.Di
             else
                 end=orientation;
 
-            mover=GetTurnAnimation(end);
+            mover=AnimatorUtil.GetTurnAnimation(roombaImage, end);
             previousOrientation=end;
         }
         else if (c=='a' || c== 'A')
         {
-            mover=GetAdvanceAmination(orientation);
+            mover=AnimatorUtil.GetAdvanceAmination(roombaImage, roombaView, orientation);
             previousOrientation=orientation;
 
         }
@@ -321,109 +356,36 @@ public class RoombaViewFragment extends BaseFragment implements CommandDialog.Di
 
         mover.start();
 
-
-
     }
 
+    /**
+     * Gets the animation corresponding to Advance command
+     * @param orientation
+     */
     private void AnimateAdvance(Orientation orientation)
     {
-        ObjectAnimator mover=GetAdvanceAmination(orientation);
-
-       StartRoombaAnimation(mover);
-
-    }
-
-    private ObjectAnimator GetAdvanceAmination(Orientation orientation)
-    {
-        ObjectAnimator mover = null;
-
-        switch (orientation)
-        {
-            case NORTH:
-                mover = ObjectAnimator.ofFloat(roombaImage, "Y", roombaImage.getY(), roombaImage.getY() - roombaView.getSquareHeight());
-                break;
-
-            case SOUTH:
-                mover = ObjectAnimator.ofFloat(roombaImage, "Y", roombaImage.getY(), roombaImage.getY() + roombaView.getSquareHeight());
-                break;
-
-            case EAST:
-                mover = ObjectAnimator.ofFloat(roombaImage, "X", roombaImage.getX(), roombaImage.getX() + roombaView.getSquareWidth());
-                break;
-
-            case WEST:
-                mover = ObjectAnimator.ofFloat(roombaImage, "X", roombaImage.getX(), roombaImage.getX() - roombaView.getSquareWidth());
-                break;
-
-        }
-
-        return mover;
-
-    }
-
-
-
-    private void AnimateTurn(Orientation orientation)
-    {
-
-        ObjectAnimator mover=GetTurnAnimation(orientation);
+        ObjectAnimator mover=AnimatorUtil.GetAdvanceAmination(roombaImage, roombaView, orientation);
 
         StartRoombaAnimation(mover);
 
-
     }
 
-    private ObjectAnimator GetTurnAnimation(Orientation orientation)
+    /**
+     * Gets the animation corresponding to left or right command
+     * @param orientation
+     */
+    private void AnimateTurn(Orientation orientation)
     {
+        ObjectAnimator mover=AnimatorUtil.GetTurnAnimation(roombaImage, orientation);
 
-        ObjectAnimator mover=null;
-
-        float prevAngle = roombaImage.getRotation();
-
-        int angle = orientation.getAngle();
-
-        if (prevAngle == 360)
-            prevAngle = 0;
-
-
-        switch (orientation)
-        {
-
-            case NORTH:
-
-                if (prevAngle == 270)
-                    angle = 360;
-
-                mover = ObjectAnimator.ofFloat(roombaImage, "Rotation", prevAngle, angle);
-                break;
-
-            case SOUTH:
-
-
-                mover = ObjectAnimator.ofFloat(roombaImage, "Rotation", prevAngle, angle);
-                break;
-
-            case EAST:
-
-
-                mover = ObjectAnimator.ofFloat(roombaImage, "Rotation", prevAngle, angle);
-                break;
-
-            case WEST:
-
-                if (prevAngle == 0)
-                    prevAngle = 360;
-
-
-                mover = ObjectAnimator.ofFloat(roombaImage, "Rotation", prevAngle, angle);
-                break;
-
-        }
-
-        return mover;
-
+        StartRoombaAnimation(mover);
     }
 
+
+    /**
+     * Starts the Roomba animation
+     * @param mover
+     */
     private void StartRoombaAnimation(ObjectAnimator mover)
     {
         mover.setDuration(Consts.ANIMATION_DURATION);
@@ -440,12 +402,20 @@ public class RoombaViewFragment extends BaseFragment implements CommandDialog.Di
         controller.setBusy(false);
     }
 
+    public void updateStatus(String status)
+    {
+        positionTextView.setText(status);
+    }
+
+    /**
+     * Updates the status of roomba position on fragment
+     */
     public void updateStatus()
     {
         RoombaController controller = ((MainActivity) getActivity()).getRoombaController();
         String roombaPosition = controller.toString();
 
-        positionTextView.setText(roombaPosition);
+        updateStatus(roombaPosition);
     }
 
     @Override
@@ -454,6 +424,10 @@ public class RoombaViewFragment extends BaseFragment implements CommandDialog.Di
         dialog.dismiss();
     }
 
+    /**
+     * Handles Submit button of command dialog box
+     * @param dialog
+     */
     @Override
     public void onDialogPositiveClick(DialogFragment dialog)
     {
@@ -461,8 +435,10 @@ public class RoombaViewFragment extends BaseFragment implements CommandDialog.Di
         RoombaController controller=((MainActivity) getActivity()).getRoombaController();
         EditText commandText= (EditText) dialog.getDialog().findViewById(R.id.command);
 
+        // Get the command
         String command= String.valueOf(commandText.getText());
 
+        // Send it to controller for processing. Controller will in turn send the intent to update UI after filtering invalid commands
         controller.ProcessCommand(command);
 
 
