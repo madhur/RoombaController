@@ -1,7 +1,14 @@
 package cleanitnow.com.roombacontroller.controller;
 
+import android.content.Context;
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
+
 import java.util.ArrayList;
 
+import cleanitnow.com.roombacontroller.App;
+import cleanitnow.com.roombacontroller.Consts;
 import cleanitnow.com.roombacontroller.Orientation;
 import cleanitnow.com.roombacontroller.positiondata.Position;
 
@@ -10,11 +17,10 @@ import cleanitnow.com.roombacontroller.positiondata.Position;
  */
 
 
-
 /**
  * Implementation of Roomba Controller
-  */
-public class RoombaController implements  IController
+ */
+public class RoombaController implements IController
 {
 
     /**
@@ -22,40 +28,43 @@ public class RoombaController implements  IController
      */
     private Position position;
 
+    private Context context;
 
-    /**
-     * ArrayList to hold the observers
-     */
-    private ArrayList<IObserver> observers=new ArrayList<IObserver>();
 
-    public RoombaController()
+    public RoombaController(Context context)
     {
 
-        position=new Position();
+        position = new Position();
+        this.context = context;
     }
 
     /**
-     *  Advance the roomba position. Notify the observers
+     * Advance the roomba position. Notify the observers
      */
     @Override
     public void Advance()
     {
 
-        position.Advance();
+        if (position.Advance())
+        {
 
-        positionChanged();
+
+            LocalBroadcastManager.getInstance(context).sendBroadcast(PrepareIntent(Consts.ACTION_ADVANCE));
+        }
 
     }
 
     /**
-     *Advance the roomba position. Notify the observers
-      */
+     * Advance the roomba position. Notify the observers
+     */
     @Override
     public void TurnLeft()
     {
 
         position.TurnLeft();
-        positionChanged();
+
+
+        LocalBroadcastManager.getInstance(context).sendBroadcast(PrepareIntent(Consts.ACTION_LEFT));
 
     }
 
@@ -67,7 +76,29 @@ public class RoombaController implements  IController
     {
 
         position.TurnRight();
-        positionChanged();
+
+
+        LocalBroadcastManager.getInstance(context).sendBroadcast(PrepareIntent(Consts.ACTION_RIGHT));
+
+    }
+
+    /**
+     * Prepare the intent based on Controller action. Put the parameters as extras
+     *
+     * @param action
+     * @return
+     */
+    private Intent PrepareIntent(String action)
+    {
+
+        Intent intent = new Intent();
+
+        intent.setAction(action);
+        intent.putExtra(Consts.PARAM_X, getxPosition());
+        intent.putExtra(Consts.PARAM_Y, getyPosition());
+        intent.putExtra(Consts.PARAM_O, getOrientation().ordinal());
+
+        return intent;
 
     }
 
@@ -77,40 +108,11 @@ public class RoombaController implements  IController
     public void Reset()
     {
         position.Reset();
-
-        positionChanged();
     }
-
-    @Override
-    public void setObserver(IObserver observer)
-    {
-        if(!observers.contains(observer))
-        {
-            observers.add(observer);
-        }
-
-    }
-
-    @Override
-    public void positionChanged()
-    {
-        for(IObserver observer: observers)
-        {
-            observer.update();
-        }
-
-    }
-
-    @Override
-    public void removeObserver(IObserver observer)
-    {
-        if(observer!=null && observers.contains(observer))
-            observers.remove(observer);
-    }
-
 
     /**
      * Print the string representation of Controller
+     *
      * @return
      */
     @Override

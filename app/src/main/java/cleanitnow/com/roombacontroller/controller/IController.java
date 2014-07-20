@@ -15,10 +15,4 @@ public interface IController
     void TurnLeft();
 
     void TurnRight();
-
-    void setObserver(IObserver observer);
-
-    void positionChanged();
-
-    void removeObserver(IObserver observer);
 }

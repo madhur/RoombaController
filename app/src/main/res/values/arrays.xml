@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <array name="spinner_items">
-        <item>@string/remote_view</item>
-        <item>@string/map_view</item>
 
-    </array>
-    <string name="remote_view">Remote View</string>
-    <string name="map_view">Map View</string>
 </resources>

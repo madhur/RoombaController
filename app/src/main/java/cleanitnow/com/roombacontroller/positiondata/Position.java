@@ -20,27 +20,30 @@ public class Position
         Reset();
     }
 
-    public void Advance()
+    public boolean Advance()
     {
         switch (getOrientation())
         {
             case NORTH:
-               IncrementX();
-                break;
+               return IncrementX();
 
             case SOUTH:
-                DecrementX();
-                break;
+                return DecrementX();
+
 
             case EAST:
-                IncrementY();
-                break;
+                return IncrementY();
+
 
             case WEST:
-                DecrementY();
-                break;
+                return DecrementY();
+
+            default:
+                return false;
 
         }
+
+
     }
 
     public void TurnLeft()
@@ -99,37 +102,45 @@ public class Position
     }
 
 
-    public void IncrementX()
+    public boolean IncrementX()
     {
         if(getxPosition() == Consts.MAX_X)
-            return;
+            return false;
 
         xPosition=getxPosition()+1;
+
+        return true;
     }
 
-    public void DecrementX()
+    public boolean DecrementX()
     {
         if(getxPosition()==0)
-            return;
+            return false;
 
         xPosition=getxPosition()-1;
+
+        return true;
     }
 
-    public void IncrementY()
+    public boolean IncrementY()
     {
         if(getyPosition() == Consts.MAX_Y)
-            return;
+            return false;
 
         yPosition=getyPosition()+1;
 
+        return true;
+
     }
 
-    public void DecrementY()
+    public boolean DecrementY()
     {
         if(getyPosition()==0)
-            return;
+            return false;
 
         yPosition=getyPosition()-1;
+
+        return true;
 
     }
 
