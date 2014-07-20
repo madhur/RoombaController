@@ -90,6 +90,38 @@ public class RoombaController implements IController
 
     }
 
+    public void ProcessCommand(String command)
+    {
+        // Cannot process command while roomba is busy.
+        if(isBusy)
+            return;
+
+        isBusy=true;
+        for(char c: command.toCharArray())
+        {
+            if(c=='l' || c=='L')
+            {
+                position.TurnLeft();
+            }
+            else if(c=='r' || c=='R')
+            {
+                position.TurnRight();
+            }
+            else if (c=='a' || c== 'A')
+            {
+                position.Advance();
+            }
+
+        }
+
+        Intent intent=PrepareIntent(Consts.ACTION_COMMAND);
+        intent.putExtra(Consts.PARAM_CMD, command);
+
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+
+
+    }
+
     /**
      * Prepare the intent based on Controller action. Put the parameters as extras
      *

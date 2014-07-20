@@ -13,8 +13,10 @@ public class Consts
     public static final String ACTION_ADVANCE="cleanitnow.com.roombacontroller.ACTION_ADVANCE";
     public static final String ACTION_LEFT="cleanitnow.com.roombacontroller.ACTION_LEFT";
     public static final String ACTION_RIGHT="cleanitnow.com.roombacontroller.ACTION_RIGHT";
+    public static final String ACTION_COMMAND="cleanitnow.com.roombacontroller.ACTION_COMMAND";
 
     public static final String PARAM_X="x";
     public static final String PARAM_Y="y";
     public static final String PARAM_O="o";
+    public static final String PARAM_CMD="cmd";
 }

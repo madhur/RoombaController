@@ -20,7 +20,7 @@ import cleanitnow.com.roombacontroller.controller.RoombaController;
 /**
  * Created by madhur on 19-Jul-14.
  */
-public abstract class BaseFragment extends Fragment implements CommandDialog.DialogListener
+public abstract class BaseFragment extends Fragment
 {
 
     protected  int screenWidth, screenHeight;
@@ -106,39 +106,5 @@ public abstract class BaseFragment extends Fragment implements CommandDialog.Dia
         return false;
     }
 
-    @Override
-    public void onDialogNegativeClick(DialogFragment dialog)
-    {
-        dialog.dismiss();
-    }
 
-    @Override
-    public void onDialogPositiveClick(DialogFragment dialog)
-    {
-
-        RoombaController controller=((MainActivity) getActivity()).getRoombaController();
-        EditText commandText= (EditText) dialog.getDialog().findViewById(R.id.command);
-
-        String command= String.valueOf(commandText.getText());
-
-        for(char c: command.toCharArray())
-        {
-            if(c=='l' || c=='L')
-            {
-                controller.TurnLeft();
-            }
-            else if(c=='r' || c=='R')
-            {
-                controller.TurnRight();
-            }
-            else if (c=='a' || c== 'A')
-            {
-                controller.Advance();
-            }
-
-
-        }
-
-
-    }
 }
