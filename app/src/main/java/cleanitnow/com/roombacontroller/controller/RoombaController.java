@@ -144,11 +144,6 @@ public class RoombaController implements IController
         return position.getOrientation();
     }
 
-    public boolean isBusy()
-    {
-        return isBusy;
-    }
-
     public void setBusy(boolean isBusy)
     {
         this.isBusy = isBusy;

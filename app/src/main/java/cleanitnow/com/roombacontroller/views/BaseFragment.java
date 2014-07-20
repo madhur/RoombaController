@@ -69,11 +69,8 @@ public abstract class BaseFragment extends Fragment implements CommandDialog.Dia
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings)
-        {
-            return true;
-        }
-        else if (id == R.id.action_advance)
+
+        if (id == R.id.action_advance)
         {
 
             ((MainActivity) getActivity()).getRoombaController().Advance();

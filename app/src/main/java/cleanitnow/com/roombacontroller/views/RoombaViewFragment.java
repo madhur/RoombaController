@@ -38,10 +38,10 @@ public class RoombaViewFragment extends BaseFragment
     private RoombaView roombaView;
     private TextView positionTextView;
 
-    private ObjectAnimator mover = null;
+    private ObjectAnimator mover;
     private Animator.AnimatorListener animatorListener;
 
-    BroadcastReceiver advanceReciever, turnReciever, rightReceiver;
+    private BroadcastReceiver advanceReciever, turnReciever;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -56,7 +56,7 @@ public class RoombaViewFragment extends BaseFragment
                 if(!mover.isRunning())
                 {
                     AnimateAdvance(Orientation.values()[intent.getIntExtra(Consts.PARAM_O, -1)]);
-                    update();
+                    updateStatus();
                 }
                 else
                     Toast.makeText(getActivity(), "Roomba is busy", Toast.LENGTH_SHORT).show();
@@ -71,7 +71,7 @@ public class RoombaViewFragment extends BaseFragment
                 if(!mover.isRunning())
                 {
                     AnimateTurn(Orientation.values()[intent.getIntExtra(Consts.PARAM_O, -1)]);
-                    update();
+                    updateStatus();
                 }
                 else
                     Toast.makeText(getActivity(), "Roomba is busy", Toast.LENGTH_SHORT).show();
@@ -155,14 +155,11 @@ public class RoombaViewFragment extends BaseFragment
     {
         super.onResume();
 
-        Log.d(App.TAG, String.valueOf(roombaView.getTotalWidth()));
-        Log.d(App.TAG, String.valueOf(roombaView.getTotalHeight()));
-
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(advanceReciever, new IntentFilter(Consts.ACTION_ADVANCE));
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(turnReciever, new IntentFilter(Consts.ACTION_LEFT));
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(turnReciever, new IntentFilter(Consts.ACTION_RIGHT));
 
-        update();
+        updateStatus();
     }
 
     @Override
@@ -174,25 +171,8 @@ public class RoombaViewFragment extends BaseFragment
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(turnReciever);
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState)
-    {
-        super.onActivityCreated(savedInstanceState);
-
-
-    }
-
     private void AnimateAdvance(Orientation orientation)
     {
-        Log.d(App.TAG, "getTranslationY: " + String.valueOf(roombaImage.getTranslationY()));
-        Log.d(App.TAG, "Y: " + String.valueOf(roombaImage.getY()));
-
-        Log.d(App.TAG, "getSquareHeight: " + String.valueOf(roombaView.getSquareHeight()));
-        Log.d(App.TAG, "getSquareWidth: " + String.valueOf(roombaView.getSquareWidth()));
-
-
-
-
         switch (orientation)
         {
             case NORTH:
@@ -213,18 +193,14 @@ public class RoombaViewFragment extends BaseFragment
 
         }
 
-        mover.addListener(animatorListener);
-
-        mover.setDuration(700);
-
-        mover.start();
+        StartRoombaAnimation();
 
     }
 
     private void AnimateTurn(Orientation orientation)
     {
 
-        ObjectAnimator mover = null;
+
         float prevAngle = roombaImage.getRotation();
 
         int angle = orientation.getAngle();
@@ -267,13 +243,18 @@ public class RoombaViewFragment extends BaseFragment
 
         }
 
-        mover.setDuration(700);
+        StartRoombaAnimation();
+
+
+    }
+
+    private void StartRoombaAnimation()
+    {
+        mover.setDuration(Consts.ANIMATION_DURATION);
 
         mover.addListener(animatorListener);
 
         mover.start();
-
-
 
     }
 
@@ -283,7 +264,7 @@ public class RoombaViewFragment extends BaseFragment
         controller.setBusy(false);
     }
 
-    public void update()
+    public void updateStatus()
     {
         RoombaController controller = ((MainActivity) getActivity()).getRoombaController();
         String roombaPosition = controller.toString();

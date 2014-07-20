@@ -5,9 +5,8 @@ package cleanitnow.com.roombacontroller;
  */
 public class Consts
 {
-    public static final int NUM_GRIDS=48;
-    public static final int MAX_X=5;
-    public static final int MAX_Y=7;
+    public static final int ANIMATION_DURATION=700;
+
     public static final int NUM_ROWS=6;
     public static final int NUM_COLS=8;
 

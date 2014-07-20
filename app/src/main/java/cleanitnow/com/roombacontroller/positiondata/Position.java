@@ -104,7 +104,7 @@ public class Position
 
     public boolean IncrementX()
     {
-        if(getxPosition() == Consts.MAX_X)
+        if(getxPosition() == Consts.NUM_ROWS -1)
             return false;
 
         xPosition=getxPosition()+1;
@@ -124,7 +124,7 @@ public class Position
 
     public boolean IncrementY()
     {
-        if(getyPosition() == Consts.MAX_Y)
+        if(getyPosition() == Consts.NUM_COLS-1)
             return false;
 
         yPosition=getyPosition()+1;
