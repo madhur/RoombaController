@@ -11,15 +11,16 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,7 +37,7 @@ import cleanitnow.com.roombacontroller.controller.RoombaController;
 public class RoombaViewFragment extends BaseFragment implements CommandDialog.DialogListener
 {
     private ImageView roombaImage;
-    private LinearLayout frameLayout;
+    private FrameLayout frameLayout;
     private RoombaView roombaView;
     private TextView positionTextView;
     private boolean isRunning=false;
@@ -218,12 +219,9 @@ public class RoombaViewFragment extends BaseFragment implements CommandDialog.Di
     {
         View v = inflater.inflate(R.layout.fragment_roombaview, container, false);
         roombaImage = (ImageView) v.findViewById(R.id.imgRoomba);
-        frameLayout = (LinearLayout) v.findViewById(R.id.frame_layout);
+        frameLayout = (FrameLayout) v.findViewById(R.id.frame_layout);
         roombaView = (RoombaView) v.findViewById(R.id.roombaView);
         positionTextView = (TextView) v.findViewById(R.id.roomba_position);
-
-        Log.d(App.TAG, String.valueOf(roombaView.getTotalWidth()));
-        Log.d(App.TAG, String.valueOf(roombaView.getTotalHeight()));
 
         ViewTreeObserver observer = frameLayout.getViewTreeObserver();
         observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener()
@@ -233,22 +231,51 @@ public class RoombaViewFragment extends BaseFragment implements CommandDialog.Di
             public void onGlobalLayout()
             {
 
-
-                Log.d(App.TAG, String.valueOf(roombaView.getTotalWidth()));
-                Log.d(App.TAG, String.valueOf(roombaView.getTotalHeight()));
-
                 frameLayout.getViewTreeObserver().removeGlobalOnLayoutListener(
                         this);
 
-                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(roombaView.getTotalWidth() / Consts.NUM_COLS, roombaView.getTotalHeight() / Consts.NUM_ROWS);
-
-                layoutParams.topMargin = roombaView.getTotalHeight() - roombaView.getSquareHeight();
-                roombaImage.setLayoutParams(layoutParams);
+               InitRoombaPosition();
             }
         });
 
 
         return v;
+    }
+
+
+    private void InitRoombaPosition()
+    {
+
+
+
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(roombaView.getTotalWidth() / Consts.NUM_COLS, roombaView.getTotalHeight() / Consts.NUM_ROWS);
+
+        layoutParams.topMargin = roombaView.getTotalHeight() - roombaView.getSquareHeight();
+        roombaImage.setLayoutParams(layoutParams);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        if(super.onOptionsItemSelected(item))
+        {
+            return true;
+        }
+        else if(item.getItemId()==R.id.action_reset)
+        {
+            ((MainActivity) getActivity()).getRoombaController().Reset();
+
+            roombaImage.setTranslationX(0);
+            roombaImage.setTranslationY(0);
+
+            updateStatus();
+
+            return true;
+        }
+
+        return false;
+
     }
 
     /**
@@ -439,7 +466,8 @@ public class RoombaViewFragment extends BaseFragment implements CommandDialog.Di
         String command= String.valueOf(commandText.getText());
 
         // Send it to controller for processing. Controller will in turn send the intent to update UI after filtering invalid commands
-        controller.ProcessCommand(command);
+        if(!TextUtils.isEmpty(command))
+            controller.ProcessCommand(command);
 
 
     }

@@ -4,13 +4,11 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.Window;
 
-import cleanitnow.com.roombacontroller.App;
 import cleanitnow.com.roombacontroller.MainActivity;
 import cleanitnow.com.roombacontroller.R;
 
@@ -47,9 +45,6 @@ public abstract class BaseFragment extends Fragment
 
         screenHeight=screenHeight - (titleHeight + contentViewTop);
 
-        Log.d(App.TAG, "Screen width: " + screenWidth);
-        Log.d(App.TAG, "Screen height: " + screenHeight);
-
 
     }
 
@@ -83,6 +78,7 @@ public abstract class BaseFragment extends Fragment
         {
 
             ((MainActivity) getActivity()).getRoombaController().Advance();
+            return true;
         }
 
         else if (id == R.id.action_left)
@@ -99,16 +95,11 @@ public abstract class BaseFragment extends Fragment
 
             return true;
         }
-        else if (id == R.id.action_reset)
-        {
-            ((MainActivity) getActivity()).getRoombaController().Reset();
-
-            return true;
-        }
         else if (id == R.id.action_command)
         {
 
             new CommandDialog().show(getFragmentManager(), "tag");
+            return true;
         }
 
 
