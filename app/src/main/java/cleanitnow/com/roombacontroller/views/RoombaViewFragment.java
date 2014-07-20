@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,6 +44,11 @@ public class RoombaViewFragment extends BaseFragment implements CommandDialog.Di
     private RoombaView roombaView;
     private TextView positionTextView;
     private boolean isRunning=false;
+
+
+    private String command;
+    private int index=0;
+    private Orientation previousOrientation;
 
 
     private Animator.AnimatorListener animatorListener, commandanimatorListener;
@@ -118,6 +124,8 @@ public class RoombaViewFragment extends BaseFragment implements CommandDialog.Di
                 ((ActionBarActivity)getActivity()).setSupportProgressBarIndeterminateVisibility(false);
                 AnimationFinished();
                 isRunning=false;
+
+
             }
 
             @Override
@@ -148,6 +156,23 @@ public class RoombaViewFragment extends BaseFragment implements CommandDialog.Di
                 ((ActionBarActivity)getActivity()).setSupportProgressBarIndeterminateVisibility(false);
                 AnimationFinished();
                 isRunning=false;
+
+                index=index+1;
+
+                RoombaController controller = ((MainActivity) getActivity()).getRoombaController();
+                if(command.length()> index)
+                {
+                    Log.d(App.TAG, "Executing command index " + String.valueOf(index) + " for " + String.valueOf(command.charAt(index)) + " orientation " +previousOrientation );
+                    ExecuteCharacterCommand(command.charAt(index), previousOrientation);
+                }
+                else
+                {
+                    //animation is finished. Reset the index
+                    Log.d(App.TAG, "Animation finish");
+                    index=0;
+
+                }
+
             }
 
             @Override
@@ -235,34 +260,67 @@ public class RoombaViewFragment extends BaseFragment implements CommandDialog.Di
 
     private void AnimateCommand(String command, Orientation orientation)
     {
-        AnimatorSet set = new AnimatorSet();
-        ArrayList<Animator> items=new ArrayList<Animator>();
 
-        for(char c: command.toCharArray())
+        this.command=command;
+        char c=command.charAt(0);
+
+        Log.d(App.TAG, "Executing command index 0 for " + String.valueOf(c) + " orientation " + String.valueOf(orientation));
+        ExecuteCharacterCommand(c, orientation);
+
+    }
+
+    private void ExecuteCharacterCommand(char c, Orientation orientation)
+    {
+        Orientation  end;
+
+        ObjectAnimator mover=null;
+
+        if(c=='l' || c=='L')
         {
-            if(c=='l' || c=='L')
-            {
-                items.add(GetTurnAnimation(orientation));
+            if(previousOrientation==Orientation.NORTH)
+                end=Orientation.WEST;
+            else if(previousOrientation==Orientation.WEST)
+                end=Orientation.SOUTH;
+            else if(previousOrientation== Orientation.EAST)
+                end=Orientation.NORTH;
+            else if(previousOrientation == Orientation.SOUTH)
+                end=Orientation.EAST;
+            else
+                end=orientation;
 
-            }
-            else if(c=='r' || c=='R')
-            {
-                items.add(GetTurnAnimation(orientation));
-            }
-            else if (c=='a' || c== 'A')
-            {
-                items.add(GetAdvanceAmination(orientation));
+            mover=GetTurnAnimation(end);
+            previousOrientation=end;
 
-              //  StartRoombaAnimation(GetAdvanceAmination(orientation));
-            }
+        }
+        else if(c=='r' || c=='R')
+        {
+            if(previousOrientation==Orientation.NORTH)
+                end=Orientation.EAST;
+            else if(previousOrientation==Orientation.WEST)
+                end=Orientation.NORTH;
+            else if(previousOrientation== Orientation.EAST)
+                end=Orientation.SOUTH;
+            else if(previousOrientation == Orientation.SOUTH)
+                end=Orientation.WEST;
+            else
+                end=orientation;
+
+            mover=GetTurnAnimation(end);
+            previousOrientation=end;
+        }
+        else if (c=='a' || c== 'A')
+        {
+            mover=GetAdvanceAmination(orientation);
+            previousOrientation=orientation;
 
         }
 
-        set.addListener(animatorListener);
-        set.setDuration(700);
-        set.playSequentially(items);
+        mover.setDuration(Consts.ANIMATION_DURATION);
 
-        set.start();
+        mover.addListener(commandanimatorListener);
+
+        mover.start();
+
 
 
     }
@@ -302,6 +360,8 @@ public class RoombaViewFragment extends BaseFragment implements CommandDialog.Di
         return mover;
 
     }
+
+
 
     private void AnimateTurn(Orientation orientation)
     {

@@ -97,6 +97,11 @@ public class RoombaController implements IController
             return;
 
         isBusy=true;
+
+        // We prepare the intent first, because we want to pass the initial orientation, not the final one.
+        Intent intent=PrepareIntent(Consts.ACTION_COMMAND);
+        intent.putExtra(Consts.PARAM_CMD, command);
+
         for(char c: command.toCharArray())
         {
             if(c=='l' || c=='L')
@@ -114,8 +119,7 @@ public class RoombaController implements IController
 
         }
 
-        Intent intent=PrepareIntent(Consts.ACTION_COMMAND);
-        intent.putExtra(Consts.PARAM_CMD, command);
+
 
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
 
