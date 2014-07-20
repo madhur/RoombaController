@@ -245,9 +245,6 @@ public class RoombaViewFragment extends BaseFragment implements CommandDialog.Di
 
     private void InitRoombaPosition()
     {
-
-
-
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(roombaView.getTotalWidth() / Consts.NUM_COLS, roombaView.getTotalHeight() / Consts.NUM_ROWS);
 
         layoutParams.topMargin = roombaView.getTotalHeight() - roombaView.getSquareHeight();
@@ -268,7 +265,8 @@ public class RoombaViewFragment extends BaseFragment implements CommandDialog.Di
 
             roombaImage.setTranslationX(0);
             roombaImage.setTranslationY(0);
-
+            roombaImage.setRotation(0);
+            previousOrientation=null;
             updateStatus();
 
             return true;
@@ -348,7 +346,7 @@ public class RoombaViewFragment extends BaseFragment implements CommandDialog.Di
             else if(previousOrientation == Orientation.SOUTH)
                 end=Orientation.EAST;
             else
-                end=orientation;
+                end=Orientation.WEST;
 
             mover=AnimatorUtil.GetTurnAnimation(roombaImage, end);
             previousOrientation=end;
@@ -365,7 +363,7 @@ public class RoombaViewFragment extends BaseFragment implements CommandDialog.Di
             else if(previousOrientation == Orientation.SOUTH)
                 end=Orientation.WEST;
             else
-                end=orientation;
+                end=Orientation.EAST;
 
             mover=AnimatorUtil.GetTurnAnimation(roombaImage, end);
             previousOrientation=end;
