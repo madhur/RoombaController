@@ -1,16 +1,14 @@
 package cleanitnow.com.roombacontroller.views;
 
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.Window;
 
 import cleanitnow.com.roombacontroller.MainActivity;
 import cleanitnow.com.roombacontroller.R;
+import cleanitnow.com.roombacontroller.controller.IController;
 
 /**
  * Created by madhur on 19-Jul-14.
@@ -18,42 +16,20 @@ import cleanitnow.com.roombacontroller.R;
 public abstract class BaseFragment extends Fragment
 {
 
-    protected  int screenWidth, screenHeight;
-
-    /**
-     * In this method we get the screen dimensions and store it for later use.
-     * @param savedInstanceState
-     */
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
         setHasOptionsMenu(true);
-
-        DisplayMetrics metrics = getActivity().getResources().getDisplayMetrics();
-
-        screenWidth = metrics.widthPixels ;
-        screenHeight = metrics.heightPixels;
-
-        Rect rect = new Rect();
-        Window win =getActivity().getWindow();
-        win.getDecorView().getWindowVisibleDisplayFrame(rect);
-        int statusHeight = rect.top;
-        int contentViewTop = win.findViewById(Window.ID_ANDROID_CONTENT).getTop();
-        int titleHeight = contentViewTop - statusHeight;
-
-        screenHeight=screenHeight - (titleHeight + contentViewTop);
-
-
     }
-
 
     /***
      * Inflate the menu
      * @param menu
      * @param inflater
      */
+
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
@@ -73,17 +49,18 @@ public abstract class BaseFragment extends Fragment
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        IController controller=((MainActivity) getActivity()).getRoombaController();
 
         if (id == R.id.action_advance)
         {
 
-            ((MainActivity) getActivity()).getRoombaController().Advance();
+             controller.Advance();
             return true;
         }
 
         else if (id == R.id.action_left)
         {
-            ((MainActivity) getActivity()).getRoombaController().TurnLeft();
+            controller.TurnLeft();
 
             return true;
 
@@ -91,7 +68,7 @@ public abstract class BaseFragment extends Fragment
 
         else if (id == R.id.action_right)
         {
-            ((MainActivity) getActivity()).getRoombaController().TurnRight();
+            controller.TurnRight();
 
             return true;
         }

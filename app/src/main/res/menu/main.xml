@@ -5,22 +5,22 @@
     <item android:id="@+id/action_left"
           android:title="@string/action_left"
           android:orderInCategory="100"
-          app:showAsAction="always" />
+          app:showAsAction="ifRoom" />
 
     <item android:id="@+id/action_right"
           android:title="@string/action_right"
           android:orderInCategory="100"
-          app:showAsAction="always" />
+          app:showAsAction="ifRoom" />
 
     <item android:id="@+id/action_advance"
           android:title="@string/action_advance"
           android:orderInCategory="100"
-          app:showAsAction="always" />
+          app:showAsAction="ifRoom" />
 
     <item android:id="@+id/action_reset"
           android:title="@string/action_reset"
           android:orderInCategory="100"
-          app:showAsAction="ifRoom" />
+          app:showAsAction="never" />
 
     <item android:id="@+id/action_command"
           android:title="@string/action_command"

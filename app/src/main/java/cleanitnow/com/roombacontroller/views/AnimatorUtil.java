@@ -9,7 +9,7 @@ import cleanitnow.com.roombacontroller.Orientation;
  * Created by madhur on 20-Jul-14.
  * Utility class for calculating animations
  */
-public class AnimatorUtil
+class AnimatorUtil
 {
 
     /**

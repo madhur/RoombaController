@@ -1,43 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/linear_layout"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
 
-    <FrameLayout android:id="@+id/frame_layout"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:id="@+id/frame_layout"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent">
+
+    <cleanitnow.com.roombacontroller.views.RoombaView
+        android:id="@+id/roombaView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"/>
 
-        <cleanitnow.com.roombacontroller.views.RoombaView
-            android:id="@+id/roombaView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+    <ImageView
+        android:contentDescription="@string/roomba"
+        android:id="@+id/imgRoomba"
+        android:layout_width="wrap_content"
+        android:src="@drawable/roomba"
+        android:layout_height="wrap_content"/>
 
-        <ImageView
-            android:id="@+id/imgRoomba"
+    <RelativeLayout
+        android:layout_gravity="bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/roomba_position"
+            android:layout_centerHorizontal="true"
+
+            android:layout_centerInParent="true"
+
             android:layout_width="wrap_content"
-            android:src="@drawable/roomba"
+            android:textSize="16sp"
+            android:text="@string/current_position"
+            android:layout_marginTop="20dp"
             android:layout_height="wrap_content"/>
-
-        <RelativeLayout android:layout_gravity="bottom"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/roomba_position"
-               android:layout_centerHorizontal="true"
-
-                android:layout_centerInParent="true"
-
-                android:layout_width="wrap_content"
-                android:textSize="16sp"
-                android:text="@string/current_position"
-                android:layout_marginTop="20dp"
-                android:layout_height="wrap_content"/>
-        </RelativeLayout>
-    </FrameLayout>
+    </RelativeLayout>
+</FrameLayout>
 
 
-</LinearLayout>

@@ -22,12 +22,12 @@ public class RoombaController implements IController
     /**
      * X, Y , orientation are encapsulated in Position class
      */
-    private Position position;
+    private final Position position;
 
     /***
      * We store context to fire broadcast intents from the methods of this class
      */
-    private Context context;
+    private final Context context;
 
     /**
      * Field indicating if the controller is busy executing a command
