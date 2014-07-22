@@ -15,4 +15,10 @@ public interface IController
     void TurnLeft();
 
     void TurnRight();
+
+    void ProcessCommand(String command);
+
+    public void Reset();
+
+    public void setBusy(boolean isBusy);
 }

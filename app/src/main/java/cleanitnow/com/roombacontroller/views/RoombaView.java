@@ -6,10 +6,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
-import cleanitnow.com.roombacontroller.App;
 import cleanitnow.com.roombacontroller.Consts;
 
 /**
@@ -104,7 +102,7 @@ public class RoombaView extends View
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh)
     {
-        Log.d(App.TAG, "onSizeChanged");
+
         super.onSizeChanged(w, h, oldw, oldh);
         this.width = w;
         this.height = h;
@@ -118,14 +116,12 @@ public class RoombaView extends View
             this.height=this.width=h;
         }
 
-        Log.d(App.TAG, "New width: " + width);
-        Log.d(App.TAG, "New height: " + height);
     }
 
     @Override
     protected void onDraw(Canvas canvas)
     {
-        Log.d(App.TAG, canvas.getClipBounds().flattenToString());
+
 
 
         super.onDraw(canvas);

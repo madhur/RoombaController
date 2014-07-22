@@ -29,7 +29,7 @@ import cleanitnow.com.roombacontroller.Consts;
 import cleanitnow.com.roombacontroller.MainActivity;
 import cleanitnow.com.roombacontroller.Orientation;
 import cleanitnow.com.roombacontroller.R;
-import cleanitnow.com.roombacontroller.controller.RoombaController;
+import cleanitnow.com.roombacontroller.controller.IController;
 
 /**
  * Created by madhur on 19-Jul-14.
@@ -177,10 +177,13 @@ public class RoombaViewFragment extends BaseFragment implements CommandDialog.Di
 
                     // Since animation is finished - reset running indicator, hide progress, reset status on controller, update status
                     isRunning=false;
+                    previousOrientation=null;
+
                     ((ActionBarActivity)getActivity()).setSupportProgressBarIndeterminateVisibility(false);
                     AnimationFinished();
 
                     updateStatus();
+
 
                 }
 
@@ -423,7 +426,7 @@ public class RoombaViewFragment extends BaseFragment implements CommandDialog.Di
 
     private void AnimationFinished()
     {
-        RoombaController controller = ((MainActivity) getActivity()).getRoombaController();
+        IController controller = ((MainActivity) getActivity()).getRoombaController();
         controller.setBusy(false);
     }
 
@@ -437,7 +440,7 @@ public class RoombaViewFragment extends BaseFragment implements CommandDialog.Di
      */
     public void updateStatus()
     {
-        RoombaController controller = ((MainActivity) getActivity()).getRoombaController();
+        IController controller = ((MainActivity) getActivity()).getRoombaController();
         String roombaPosition = controller.toString();
 
         updateStatus(roombaPosition);
@@ -457,7 +460,7 @@ public class RoombaViewFragment extends BaseFragment implements CommandDialog.Di
     public void onDialogPositiveClick(DialogFragment dialog)
     {
 
-        RoombaController controller=((MainActivity) getActivity()).getRoombaController();
+        IController controller=((MainActivity) getActivity()).getRoombaController();
         EditText commandText= (EditText) dialog.getDialog().findViewById(R.id.command);
 
         // Get the command
